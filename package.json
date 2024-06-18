@@ -9,6 +9,7 @@
   "author": "bick renan",
   "license": "ISC",
   "dependencies": {
+    "@netlify/functions": "^2.7.0",
     "express": "^4.19.2"
   }
 }
