@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const faunadb = require('faunadb'),
     q = faunadb.query;
+const {response} = require("express");
 
 const client = new faunadb.Client({ secret: process.env.FAUNADB_SECRET });
 
@@ -48,15 +49,18 @@ exports.handler = async (event, context) => {
 
     if (event.httpMethod === 'GET') {
         try {
-            // Exemplo: buscar todos os registros de uma coleção
-            const result = await client.query(
-                q.Paginate(q.Match(q.Index('nome_do_indice')))
-            );
-
+            client.query(
+                q.Map(
+                    q.Paginate(q.Documents(q.Collection('itens'))),
+                    q.Lambda('X', q.Get(q.Var('X')))
+                )
+            )
+                .then((response) => console.log(response.data))
+                .catch((error) => console.error('Error: ', error));
             return {
                 statusCode: 200,
                 headers,
-                body: JSON.stringify(result)
+                body: JSON.stringify(response)
             };
         } catch (error) {
             console.error('Erro ao conectar ao FaunaDB:', error);
