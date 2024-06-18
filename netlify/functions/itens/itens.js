@@ -27,7 +27,7 @@ exports.handler = async (event, context) => {
         try {
             const getResult = await client.query(
                 q.Map(
-                    q.Paginate(q.Documents(q.Collection('itens'))),
+                    q.Paginate(q.Documents(q.Collection('Itens'))),
                     q.Lambda('X', q.Get(q.Var('X')))
                 )
             );
