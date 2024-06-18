@@ -1,9 +1,7 @@
 require('dotenv').config();
 
-const faunadb = require('faunadb'),
-    q = faunadb.query;
+const faunadb = require('faunadb'), q = faunadb.query;
 const {response} = require("express");
-
 const client = new faunadb.Client({ secret: process.env.FAUNADB_SECRET });
 
 
