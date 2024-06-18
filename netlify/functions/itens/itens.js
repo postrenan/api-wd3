@@ -25,18 +25,16 @@ exports.handler = async (event, context) => {
 
     if (event.httpMethod === 'GET') {
         try {
-            client.query(
+            const getResult = await client.query(
                 q.Map(
                     q.Paginate(q.Documents(q.Collection('itens'))),
                     q.Lambda('X', q.Get(q.Var('X')))
                 )
-            )
-                .then((response) => console.log(response.data))
-                .catch((error) => console.error('Error: ', error));
+            );
             return {
                 statusCode: 200,
                 headers,
-                body: JSON.stringify(response)
+                body: JSON.stringify(getResult.data)
             };
         } catch (error) {
             console.error('Erro ao conectar ao FaunaDB:', error);
