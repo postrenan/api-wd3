@@ -8,7 +8,7 @@ const client = new faunadb.Client({ secret: process.env.FAUNADB_SECRET });
 
 
 const headers = {
-    'Access-Control-Allow-Origin': '*', // Permite acesso de qualquer domínio
+    'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE'
 };
@@ -41,7 +41,7 @@ exports.handler = async (event, context) => {
             return {
                 statusCode: 500,
                 headers,
-                body: JSON.stringify({ error: "Erro interno do servidor" })
+                body: JSON.stringify({ error: "Erro interno do meu kctao" })
             };
         }
     } else if (event.httpMethod === 'POST') {
