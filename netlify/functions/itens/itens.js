@@ -1,10 +1,11 @@
 require('dotenv').config();
 
-const faunadb = require('faunadb'),
-    q = faunadb.query;
-const {response} = require("express");
+import { Client, fql, FaunaError } from "fauna";
+const client = new Client({
+    secret: process.env.FAUNADB_SECRET
+});
 
-const client = new faunadb.Client({ secret: process.env.FAUNADB_SECRET });
+const {response} = require("express");
 
 
 const headers = {
@@ -25,24 +26,23 @@ exports.handler = async (event, context) => {
 
     if (event.httpMethod === 'GET') {
         try {
-            const getResult = await client.query(
-                q.Map(
-                    q.Paginate(q.Documents(q.Collection('Itens'))),
-                    q.Lambda('X', q.Get(q.Var('X')))
-                )
-            );
-            return {
-                statusCode: 200,
-                headers,
-                body: JSON.stringify(getResult.data)
-            };
+            const query = fql`
+                Itens{
+                  nome,
+                  descricao
+                }`;
+
+            // Run the query
+            const response = await client.query(query);
+            console.log(response.data);
+
         } catch (error) {
-            console.error('Erro ao conectar ao FaunaDB:', error);
-            return {
-                statusCode: 500,
-                headers,
-                body: JSON.stringify({ error: "Erro interno do meu kctao" })
-            };
+            if (error instanceof FaunaError) {
+                console.log(error);
+            }
+        } finally {
+            // Clean up any remaining resources
+            client.close();
         }
     } else if (event.httpMethod === 'POST') {
         try {
